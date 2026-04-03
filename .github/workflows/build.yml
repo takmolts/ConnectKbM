@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             artifact_name: ConnectKbM-Linux
           - os: windows-latest
             artifact_name: ConnectKbM-Windows
