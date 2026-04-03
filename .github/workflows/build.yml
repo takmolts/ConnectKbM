@@ -38,11 +38,16 @@ jobs:
     - name: Build with PyInstaller
       run: pyinstaller --noconfirm ConnectKbM.spec
 
-    - name: Create zip archive
-      shell: bash
+    - name: Create zip archive (Linux/macOS)
+      if: runner.os != 'Windows'
       run: |
         cd dist
         zip -r ../ConnectKbM-${{ runner.os }}.zip ConnectKbM/
+
+    - name: Create zip archive (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: Compress-Archive -Path dist/ConnectKbM -DestinationPath ConnectKbM-${{ runner.os }}.zip
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
