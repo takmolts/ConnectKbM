@@ -1,0 +1,42 @@
+name: Build Binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: ConnectKbM-Linux
+          - os: windows-latest
+            artifact_name: ConnectKbM-Windows
+          - os: macos-latest
+            artifact_name: ConnectKbM-macOS
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller PyQt6 pynput pyyaml
+
+    - name: Build with PyInstaller
+      run: pyinstaller --noconfirm ConnectKbM.spec
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact_name }}
+        path: dist/ConnectKbM/
